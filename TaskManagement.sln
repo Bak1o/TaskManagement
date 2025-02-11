@@ -1,0 +1,61 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.12.35707.178
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaskManagement.Domain", "TaskManagement.Domain\TaskManagement.Domain.csproj", "{2D6BCFD7-23C6-497B-ABFB-68642F4306C4}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Domain", "Domain", "{4F51D1EE-66C0-4129-AE3C-2F06BF105D89}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Application", "Application", "{A7FCF81B-79CF-49E6-93FB-0FF0E9E9CD85}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaskManagement.Service", "TaskManagement.Service\TaskManagement.Service.csproj", "{D41CB00D-3F92-4BDC-B1B3-CA80970C3E8F}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DataAccess", "DataAccess", "{B09535C7-28B7-4977-B0E1-9053E53B3EA7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaskManagement.FileRepository", "TaskManagement.FileRepository\TaskManagement.FileRepository.csproj", "{B804DDFF-815E-4F9B-8777-16C2222A8AC8}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Presentation", "Presentation", "{6E2EB106-D8D2-4327-8FC7-03AB86D5685D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaskManagement.Api", "TaskManagement.Api\TaskManagement.Api.csproj", "{05A196DB-73E6-403E-BEAA-BBE7061C73EB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaskManagement.SqlRepository", "TaskManagement.SqlRepository\TaskManagement.SqlRepository.csproj", "{B539799D-6557-48A1-B7F2-003D7DAD07B0}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{2D6BCFD7-23C6-497B-ABFB-68642F4306C4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2D6BCFD7-23C6-497B-ABFB-68642F4306C4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2D6BCFD7-23C6-497B-ABFB-68642F4306C4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2D6BCFD7-23C6-497B-ABFB-68642F4306C4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D41CB00D-3F92-4BDC-B1B3-CA80970C3E8F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D41CB00D-3F92-4BDC-B1B3-CA80970C3E8F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D41CB00D-3F92-4BDC-B1B3-CA80970C3E8F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D41CB00D-3F92-4BDC-B1B3-CA80970C3E8F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B804DDFF-815E-4F9B-8777-16C2222A8AC8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B804DDFF-815E-4F9B-8777-16C2222A8AC8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B804DDFF-815E-4F9B-8777-16C2222A8AC8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B804DDFF-815E-4F9B-8777-16C2222A8AC8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{05A196DB-73E6-403E-BEAA-BBE7061C73EB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{05A196DB-73E6-403E-BEAA-BBE7061C73EB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{05A196DB-73E6-403E-BEAA-BBE7061C73EB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{05A196DB-73E6-403E-BEAA-BBE7061C73EB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B539799D-6557-48A1-B7F2-003D7DAD07B0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B539799D-6557-48A1-B7F2-003D7DAD07B0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B539799D-6557-48A1-B7F2-003D7DAD07B0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B539799D-6557-48A1-B7F2-003D7DAD07B0}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{2D6BCFD7-23C6-497B-ABFB-68642F4306C4} = {4F51D1EE-66C0-4129-AE3C-2F06BF105D89}
+		{D41CB00D-3F92-4BDC-B1B3-CA80970C3E8F} = {A7FCF81B-79CF-49E6-93FB-0FF0E9E9CD85}
+		{B804DDFF-815E-4F9B-8777-16C2222A8AC8} = {B09535C7-28B7-4977-B0E1-9053E53B3EA7}
+		{05A196DB-73E6-403E-BEAA-BBE7061C73EB} = {6E2EB106-D8D2-4327-8FC7-03AB86D5685D}
+		{B539799D-6557-48A1-B7F2-003D7DAD07B0} = {B09535C7-28B7-4977-B0E1-9053E53B3EA7}
+	EndGlobalSection
+EndGlobal

@@ -1,0 +1,30 @@
+[
+  {
+    "Id": 1,
+    "Name": "Marketing Project",
+    "Description": "Managing Marketing strategies",
+    "StartDate": "2025-01-07T00:00:00+04:00",
+    "EndDate": "2025-02-07T00:00:00+04:00",
+    "Status": 0,
+    "CreatedByUserId": 1
+  },
+  {
+    "Id": 2,
+    "Name": "Business Project",
+    "Description": "Managing Business strategies",
+    "StartDate": "2025-01-07T00:00:00+04:00",
+    "EndDate": "2025-03-07T00:00:00+04:00",
+    "Status": 0,
+    "CreatedByUserId": 4
+  },
+  {
+
+    "Id": 3,
+    "Name": "Communications Project",
+    "Description": "Managing Communications strategies",
+    "StartDate": "2025-01-07T00:00:00+04:00",
+    "EndDate": "2025-04-07T00:00:00+04:00",
+    "Status": 0,
+    "CreatedByUserId": 6
+  }
+]
