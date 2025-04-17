@@ -2,18 +2,18 @@
 using TaskManagement.Identity.Models;
 using TaskManagement.Identity.Requests;
 using TaskManagement.Identity.Services.Abstractions;
-using TaskManagement.MessageSender.Abstractions.Services;
+
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
-using Microsoft.AspNetCore.Identity.UI.Services;
+
 using IEmailSender = TaskManagement.MessageSender.Abstractions.Services.IEmailSender;
 using TaskManagement.Identity.Responses;
 using Microsoft.EntityFrameworkCore;
 using TaskManagement.Identity.DataTransferObjects;
 using InvalidOperationException = TaskManagement.Identity.Exceptions.InvalidOperationException;
 using TaskManagement.Identity.Queries;
-using TaskManagement.Domain.Exceptions;
-using System;
+
+
 using System.ComponentModel.DataAnnotations;
 
 namespace TaskManagement.Identity.Services.Implementations;
