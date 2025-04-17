@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using TaskManagement.Domain.Models.Abstraction;
 using TaskManagement.Domain.Models.Enums;
+using TaskManagement.Identity.Models;
 
 namespace TaskManagement.Domain.Models
 {
@@ -13,30 +14,30 @@ namespace TaskManagement.Domain.Models
 
         public string Name { get;private set; }
         public string Description { get; private set; }
-        public DateTime? StartDate { get; private set; }
-        public DateTime? EndDate { get; private set; }
+        public DateOnly? StartDate { get; private set; }
+        public DateOnly? EndDate { get; private set; }
         public Status Status { get; private set; }
-        public int CreatedByCustomerId { get; private set; }
-        public Customer CreatedByCustomer { get;  set; } = null!;
+        public string CreatedByUserId { get; private set; }
+        public ApplicationUser CreatedByUser { get;  set; } = null!;
        
         // One Project has many Tasks
-        public List<DomainTask> Tasks { get; set; } = new(); 
+        //public List<DomainTask> Tasks { get; set; } = new(); 
 
-        public Project(string name, string description,  int createdByCustomerId)
+        public Project(string name, string description,  string createdByUserId)
         {
             Name = name;
             Description = description;
             
             Status = Status.ToDo;
-            CreatedByCustomerId = createdByCustomerId;
+            CreatedByUserId = createdByUserId;
 
             
         }
 
-        public void Open(DateTime endDate)
+        public void Open(DateOnly endDate)
         {
             Status = Status.InProgress;
-            StartDate = DateTime.UtcNow;
+            StartDate = DateOnly.FromDateTime(DateTime.UtcNow);
             EndDate = endDate;
             
         }
@@ -44,6 +45,7 @@ namespace TaskManagement.Domain.Models
         public void Close()
         {
             Status = Status.Done;
+            EndDate =DateOnly.FromDateTime(DateTime.UtcNow);
         }
 
         public void Suspend()

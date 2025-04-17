@@ -11,9 +11,10 @@ namespace TaskManagement.Domain.Commands
     {
         public required string UserName { get; set; }
         public required string Email { get; set; }
-        public required string Password { get; set; }
+        //public required string Password { get; set; }
         public required string FirstName { get; set; }
         public required string LastName { get; set; }
+        public required string ApplicationUserId { get; set; }
 
         public void Validate()
         {
@@ -21,8 +22,8 @@ namespace TaskManagement.Domain.Commands
             { throw new ValidationException(" UserName must not be empty "); }
             if (string.IsNullOrWhiteSpace(Email))
             { throw new ValidationException(" Email must not be empty "); }
-            if (!string.IsNullOrWhiteSpace(Password))
-            { throw new ValidationException(" Password must not be empty "); }
+            //if (!string.IsNullOrWhiteSpace(Password))
+            //{ throw new ValidationException(" Password must not be empty "); }
             if (!string.IsNullOrWhiteSpace(FirstName))
             { throw new ValidationException(" First Name must not be empty "); }
             if (!string.IsNullOrWhiteSpace(LastName))

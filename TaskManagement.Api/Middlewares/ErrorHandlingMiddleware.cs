@@ -5,6 +5,9 @@ using System.Net;
 using System.Text.Json;
 using System.Threading.Tasks;
 using TaskManagement.Domain.Exceptions;
+using TaskManagement.Identity.Exceptions;
+using TaskManagement.Service.Exceptions;
+using UnauthorizedAccessException = TaskManagement.Identity.Exceptions.UnauthorizedAccessException;
 
 namespace TaskManagement.Api.Middlewares
 {
@@ -47,11 +50,54 @@ namespace TaskManagement.Api.Middlewares
             };
             switch(exception)
             {
-                case UnauthorizedAccessException:
+                case System.UnauthorizedAccessException:
                     problemDetails.Title = "Unauthorized access.";
                     problemDetails.Status = (int)HttpStatusCode.Unauthorized;
                     problemDetails.Type = nameof(UnauthorizedAccessException);
                     break;
+
+                case UnauthorizedAccessException:
+                    problemDetails.Title = exception.Message;
+                    problemDetails.Status = (int)HttpStatusCode.Unauthorized;
+                    problemDetails.Type = nameof(UnauthorizedAccessException);
+                    break;
+
+                case AuthenticationException:
+                    problemDetails.Title = exception.Message;
+                    problemDetails.Status = (int)HttpStatusCode.Unauthorized;
+                    problemDetails.Type = nameof(AuthenticationException);
+                    break;
+
+                case ChangePasswordException ex:
+                    problemDetails.Title = exception.Message;
+                    problemDetails.Status = (int)HttpStatusCode.InternalServerError;
+                    problemDetails.Type = nameof(ChangePasswordException);
+                    problemDetails.Extensions = ex.Errors?.ToDictionary(x => x.Code, object? (x) => x.Description) ??
+                                                problemDetails.Extensions;
+                    break;
+
+                case IdentityException ex:
+                    problemDetails.Title = exception.Message;
+                    problemDetails.Status = (int)HttpStatusCode.BadRequest;
+                    problemDetails.Type = nameof(IdentityException);
+                    problemDetails.Extensions = ex.Errors?.ToDictionary(x => x.Code, object? (x) => x.Description) ??
+                                                problemDetails.Extensions;
+                    break;
+                
+                case UserValidationException ex:
+                    problemDetails.Title = exception.Message;
+                    problemDetails.Status = (int)HttpStatusCode.BadRequest;
+                    problemDetails.Type = nameof(UserValidationException);
+                    
+                    break;
+
+                case NotFoundException ex:
+                    problemDetails.Title = exception.Message;
+                    problemDetails.Status = (int)HttpStatusCode.NotFound;
+                    problemDetails.Type = nameof(NotFoundException);
+
+                    break;
+
                 case ArgumentNullException:
                     problemDetails.Title = "Invalid request data.";
                     problemDetails.Status = (int)HttpStatusCode.BadRequest;
@@ -86,6 +132,16 @@ namespace TaskManagement.Api.Middlewares
                     problemDetails.Status = (int)HttpStatusCode.BadRequest;
                     problemDetails.Type = nameof(DomainException);
                     break;
+
+                case ConfigurationException:
+                    problemDetails.Title = "Configuration violation";
+                    problemDetails.Status= (int)HttpStatusCode.BadRequest;
+                    problemDetails.Type = nameof(ConfigurationException);
+                    break;
+
+               
+                
+
 
             }
             context.Response.ContentType = "application/problem+json";

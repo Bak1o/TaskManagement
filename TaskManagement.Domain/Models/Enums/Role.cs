@@ -7,5 +7,5 @@ using System.Threading.Tasks;
 namespace TaskManagement.Domain.Models.Enums
 {
     public enum Role : byte
-    { Admin = 0, TeamMember = 1, SuperAdmin = 3 }
+    { Manager = 0, Member = 1, Admin = 3 }
 }

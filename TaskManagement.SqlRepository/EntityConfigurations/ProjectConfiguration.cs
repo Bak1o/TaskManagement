@@ -37,22 +37,22 @@ namespace TaskManagement.SqlRepository.EntityConfigurations
                 v => (Status)Enum.Parse(typeof(Status), v)
                 );
             builder
-                .Property(x => x.CreatedByCustomerId)
+                .Property(x => x.CreatedByUserId)
                 .IsRequired();
             //builder
             //    .Property(x => x.Tasks);
 
             builder.HasIndex(x => x.Status);
             builder
-                .HasOne(c => c.CreatedByCustomer)
-                .WithMany(x => x.CreatedProjects)
-                .HasForeignKey(x => x.CreatedByCustomerId)
+                .HasOne(c => c.CreatedByUser)
+                .WithMany()
+                .HasForeignKey(x => x.CreatedByUserId)
                 .OnDelete(DeleteBehavior.Restrict); // Prevent deleting customer if projects exist
-            builder
-                .HasMany(p => p.Tasks) // One Project has many Tasks
-                .WithOne(t => t.Project) // Each Task belongs to one Project
-                .HasForeignKey(t => t.ProjectId) // Foreign key in DomainTask table
-                .OnDelete(DeleteBehavior.Cascade); // If Project is deleted, Tasks are deleted
+            //builder
+            //    .HasMany(p => p.Tasks) // One Project has many Tasks
+            //    .WithOne(t => t.Project) // Each Task belongs to one Project
+            //    .HasForeignKey(t => t.ProjectId) // Foreign key in DomainTask table
+            //    .OnDelete(DeleteBehavior.Cascade); // If Project is deleted, Tasks are deleted
 
         }
     }

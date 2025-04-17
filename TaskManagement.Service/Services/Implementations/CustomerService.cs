@@ -10,128 +10,128 @@ using TaskManagement.Service.Services.Abstractions;
 
 namespace TaskManagement.Service.Services.Implementations
 {
-    public class CustomerService : ICustomerService
+    public class CustomerService /*: ICustomerService*/
     {
-        private readonly ICustomeRepository _userRepository;
+        //private readonly ICustomeRepository _userRepository;
 
 
-        public CustomerService(ICustomeRepository userRepository)
-        {
-            _userRepository = userRepository;
+        //public CustomerService(ICustomeRepository userRepository)
+        //{
+        //    _userRepository = userRepository;
 
-            #region commented code
-            //_inMemoryDb = inMemoryDb ?? throw new ArgumentNullException(nameof(inMemoryDb));
-            //var user1 = new User
-            //{
-            //    Email = "dgF4@gmail.com",
-            //    Password = "password",
-            //    Role = Role.Admin,
-            //    UserName = "Bako"
+        //    #region commented code
+        //    //_inMemoryDb = inMemoryDb ?? throw new ArgumentNullException(nameof(inMemoryDb));
+        //    //var user1 = new User
+        //    //{
+        //    //    Email = "dgF4@gmail.com",
+        //    //    Password = "password",
+        //    //    Role = Role.Admin,
+        //    //    UserName = "Bako"
 
-            //};
-            //CreateUserAsync(user1);
+        //    //};
+        //    //CreateUserAsync(user1);
 
-            //var user2 = new User
-            //{
-            //    Email = "dgFgg4@gmail.com",
-            //    Password = "password",
-            //    Role = Role.TeamMember,
-            //    UserName = "Niko"
+        //    //var user2 = new User
+        //    //{
+        //    //    Email = "dgFgg4@gmail.com",
+        //    //    Password = "password",
+        //    //    Role = Role.TeamMember,
+        //    //    UserName = "Niko"
 
-            //};
-            //CreateUserAsync(user2);
-
-
-            //var user3 = new User
-            //{
-            //    Email = "dhFyuyg4@gmail.com",
-            //    Password = "password",
-            //    Role = Role.TeamMember,
-            //    UserName = "Nino"
-
-            //};
-            //CreateUserAsync(user3);
+        //    //};
+        //    //CreateUserAsync(user2);
 
 
-            //var user4 = new User
-            //{
-            //    Email = "dsssgF4@gmail.com",
-            //    Password = "password",
-            //    Role = Role.Admin,
-            //    UserName = "Natia"
+        //    //var user3 = new User
+        //    //{
+        //    //    Email = "dhFyuyg4@gmail.com",
+        //    //    Password = "password",
+        //    //    Role = Role.TeamMember,
+        //    //    UserName = "Nino"
 
-            //};
-            //CreateUserAsync(user4);
-
-
-            //var user5 = new User
-            //{
-            //    Email = "dsNyuussgF4@gmail.com",
-            //    Password = "password",
-            //    Role = Role.TeamMember,
-            //    UserName = "Gela"
-
-            //};
-            //CreateUserAsync(user5);
+        //    //};
+        //    //CreateUserAsync(user3);
 
 
-            //var user6 = new User
-            //{
-            //    Email = "dssSweyttsgF4@gmail.com",
-            //    Password = "password",
-            //    Role = Role.Admin,
-            //    UserName = "Ana"
+        //    //var user4 = new User
+        //    //{
+        //    //    Email = "dsssgF4@gmail.com",
+        //    //    Password = "password",
+        //    //    Role = Role.Admin,
+        //    //    UserName = "Natia"
 
-            //};
-            //CreateUserAsync(user6);
-            #endregion
+        //    //};
+        //    //CreateUserAsync(user4);
 
-        }
 
-       
+        //    //var user5 = new User
+        //    //{
+        //    //    Email = "dsNyuussgF4@gmail.com",
+        //    //    Password = "password",
+        //    //    Role = Role.TeamMember,
+        //    //    UserName = "Gela"
 
-        public async Task<int> ExecuteAsync(RegisterCustomerCommand command)
-        {
-            command.Validate();
-            var customer = new Customer(
-                command.UserName,
-                command.Email,
-                command.Password,
-                command.FirstName,
-                command.LastName
-            );
+        //    //};
+        //    //CreateUserAsync(user5);
 
-            await _userRepository.CreateAsync(customer);
-            return customer.Id; // Assuming Id is set after creation
-        }
-        public async Task ExecuteAsync(OpenCustomerCommand command)
-        {
-            command.Validate();
-            var customer = await _userRepository.GetByIdAsync(command.Id);
+
+        //    //var user6 = new User
+        //    //{
+        //    //    Email = "dssSweyttsgF4@gmail.com",
+        //    //    Password = "password",
+        //    //    Role = Role.Admin,
+        //    //    UserName = "Ana"
+
+        //    //};
+        //    //CreateUserAsync(user6);
+        //    #endregion
+
+        //}
+
+
+
+        //public async Task<int> ExecuteAsync(RegisterCustomerCommand command)
+        //{
+        //    command.Validate();
+        //    var customer = new Customer(
+        //        command.UserName,
+        //        command.Email,
+        //        command.ApplicationUserId,
+        //        command.FirstName,
+        //        command.LastName
+        //    );
+
+        //    await _userRepository.CreateAsync(customer);
+        //    return customer.Id; // Assuming Id is set after creation
+        //}
+        //public async Task ExecuteAsync(OpenCustomerCommand command)
+        //{
+        //    command.Validate();
+        //    var customer = await _userRepository.GetByIdAsync(command.Id);
            
-            customer.open(command.Role);
-            await _userRepository.UpdateAsync(customer);
-        }
+        //    customer.open(command.Role);
+        //    await _userRepository.UpdateAsync(customer);
+        //}
 
-        public async Task ExecuteAsync(CloseCustomerCommand command)
-        {
-            command.Validate();
-            var userExists = await _userRepository.GetByIdOrDefaultAsync(command.Id);
+        //public async Task ExecuteAsync(CloseCustomerCommand command)
+        //{
+        //    command.Validate();
+        //    var userExists = await _userRepository.GetByIdOrDefaultAsync(command.Id);
            
 
-            userExists.close();
+        //    userExists.close();
 
-            await _userRepository.UpdateAsync(userExists);
-        }
+        //    await _userRepository.UpdateAsync(userExists);
+        //}
 
-        public async Task ExecuteAsync(SuspendCustomerCommand command)
-        {
-            command.Validate();
-            var userExists = await _userRepository.GetByIdOrDefaultAsync(command.Id);
+        //public async Task ExecuteAsync(SuspendCustomerCommand command)
+        //{
+        //    command.Validate();
+        //    var userExists = await _userRepository.GetByIdOrDefaultAsync(command.Id);
            
-            userExists.suspend();
-            await _userRepository.UpdateAsync(userExists);
-        }
+        //    userExists.suspend();
+        //    await _userRepository.UpdateAsync(userExists);
+        //}
 
         #region commented creating user validation
         //public bool ValidateCreateUser(User user)

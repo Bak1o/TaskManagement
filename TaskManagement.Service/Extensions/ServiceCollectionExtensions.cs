@@ -13,7 +13,7 @@ namespace TaskManagement.Service.Extensions
     {
         public static IServiceCollection AddServices(this IServiceCollection serviceCollection)
         {
-            serviceCollection.AddScoped<ICustomerService, CustomerService>();
+            
             serviceCollection.AddScoped<IDomainTaskService, DomainTaskService>();
             serviceCollection.AddScoped<IProjectService, ProjectService>();
             return serviceCollection;

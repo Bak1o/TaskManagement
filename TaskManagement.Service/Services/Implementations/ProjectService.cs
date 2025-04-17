@@ -1,12 +1,16 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Identity;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Principal;
 using System.Text;
 using System.Threading.Tasks;
 using TaskManagement.Domain.Abstractions;
 using TaskManagement.Domain.Commands;
 using TaskManagement.Domain.Exceptions;
 using TaskManagement.Domain.Models;
+using TaskManagement.Identity.Models;
+using TaskManagement.Identity.Services.Abstractions;
 using TaskManagement.Service.Services.Abstractions;
 
 namespace TaskManagement.Service.Services.Implementations
@@ -14,11 +18,13 @@ namespace TaskManagement.Service.Services.Implementations
     public class ProjectService : IProjectService
     {
         private readonly IProjectRepository _projectRepository;
+        private readonly UserManager<ApplicationUser> _userManager;
 
 
-        public ProjectService(IProjectRepository projectRepository)
+        public ProjectService(IProjectRepository projectRepository, UserManager<ApplicationUser> userManager)
         {
             _projectRepository = projectRepository;
+            _userManager = userManager;
 
         }
 
@@ -48,10 +54,15 @@ namespace TaskManagement.Service.Services.Implementations
         public async Task<int> ExecuteAsync(RegisterProjectCommand command)
         {
             command.Validate();
+            var user = await _userManager.FindByEmailAsync(command.CreatedByUserMail);
+            if (user == null)
+            {
+                throw new ObjectNotFoundException(command.CreatedByUserMail,nameof(user));
+            }
             var project = new Project
                  (command.Name,
                   command.Description,
-                  command.CreatedByUserId);
+                  user.Id);
             await _projectRepository.CreateAsync(project);
             return project.Id;
 

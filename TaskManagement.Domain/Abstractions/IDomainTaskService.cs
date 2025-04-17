@@ -11,8 +11,10 @@ namespace TaskManagement.Domain.Abstractions
     public interface IDomainTaskService
     {
 
-        Task<int> OpenAsync(DomainTask task);
+        Task<int> OpenAsync(OpenTaskCommand command);
         Task UpdateAsync(UpdateTaskCommand command);
+        Task AssignUserAsync(string userEmail, int id);
+        Task RemoveAssignedUserAsync(string userEmail, int id);
         Task CloseAsync(CloseTaskCommand command);
 
     }

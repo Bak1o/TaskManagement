@@ -3,16 +3,27 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TaskManagement.Domain.Exceptions;
 using TaskManagement.Domain.Models;
 using TaskManagement.Service.Services.Abstractions;
+using TaskManagement.SqlRepository.Database;
 
 namespace TaskManagement.SqlRepository.Implementations
 {
     public class ProjectRepository : IProjectRepository
     {
-        public Task CreateAsync(Project projectToCreate)
+        private readonly AppDbContext _dbContext;
+        public ProjectRepository(AppDbContext dbContext )
         {
-            throw new NotImplementedException();
+            _dbContext = dbContext;
+        }
+        public async Task<int> CreateAsync(Project projectToCreate)
+        {
+            await  _dbContext.Projects.AddAsync( projectToCreate );
+            
+            await _dbContext.SaveChangesAsync();
+            return projectToCreate.Id;
+            
         }
 
         public Task DeleteAsync(int id)
@@ -20,14 +31,15 @@ namespace TaskManagement.SqlRepository.Implementations
             throw new NotImplementedException();
         }
 
-        public Task<Project> GetByIdAsync(int id)
+        public async Task<Project> GetByIdAsync(int id)
         {
-            throw new NotImplementedException();
+            return await GetByIdOrDefaultAsync( id )?? throw new ObjectNotFoundException(id.ToString(), nameof(Project));
         }
 
-        public Task<Project> GetByIdOrDefaultAsync(int id)
+        public async Task<Project> GetByIdOrDefaultAsync(int id)
         {
-            throw new NotImplementedException();
+         return await  _dbContext.Projects.FindAsync( id );
+            
         }
 
         public Task<List<Project>> ListAsync()
@@ -35,14 +47,16 @@ namespace TaskManagement.SqlRepository.Implementations
             throw new NotImplementedException();
         }
 
-        public Task SaveAsync(Project project)
+        public async Task SaveAsync(Project project)
         {
-            throw new NotImplementedException();
+            await _dbContext.SaveChangesAsync();
         }
 
-        public Task UpdateAsync(Project projectToUpdate)
+        public async Task UpdateAsync(Project projectToUpdate)
         {
-            throw new NotImplementedException();
+             _dbContext.Projects.Attach( projectToUpdate );
+            await SaveAsync( projectToUpdate );
+            
         }
     }
 }

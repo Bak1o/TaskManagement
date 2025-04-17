@@ -28,7 +28,7 @@ namespace TaskManagement.SqlRepository.EntityConfigurations
                 .Property(t => t.ProjectId)
                 .IsRequired();
             builder
-                .Property(t => t.CreatedByCustomerId)
+                .Property(t => t.CreatedByUserId)
                 .IsRequired();
             builder
                 .Property(t => t.Status)
@@ -56,27 +56,24 @@ namespace TaskManagement.SqlRepository.EntityConfigurations
           
             // Relationship: Task is created by one Customer
             builder
-                .HasOne(t => t.CreatedByCustomer)
-                .WithMany(c => c.CreatedTasks)
-                .HasForeignKey(t => t.CreatedByCustomerId)
+                .HasOne(t => t.CreatedByUser)
+                .WithMany()
+                .HasForeignKey(t => t.CreatedByUserId)
                 .OnDelete(DeleteBehavior.Restrict);
 
 
-            builder
-        .HasMany(t => t.AssignedCustomers)
-        .WithMany(c => c.AssignedTasks)
-        .UsingEntity<Dictionary<string, object>>(
-            "TaskCustomer",
-            j => j.HasOne<Customer>().WithMany().HasForeignKey("CustomerId"),
-            j => j.HasOne<DomainTask>().WithMany().HasForeignKey("TaskId")
-        );
-
-           
-
+            //builder
+            //   .HasMany(t => t.AssignedCustomers)
+            //    .WithMany(c => c.AssignedTasks)
+            //     .UsingEntity<Dictionary<string, object>>(
+            //"TaskCustomer",
+            //    j => j.HasOne<Customer>().WithMany().HasForeignKey("CustomerId"),
+            //    j => j.HasOne<DomainTask>().WithMany().HasForeignKey("TaskId"));
+            
             // Relationship: Task belongs to one Project
             builder
                 .HasOne(t => t.Project) // Each Task is linked to one Project
-                .WithMany(p => p.Tasks) // One Project can have multiple Tasks
+                .WithMany() // One Project can have multiple Tasks
                 .HasForeignKey(t => t.ProjectId) // Foreign key in Task table
                 .OnDelete(DeleteBehavior.Cascade); // If Project is deleted, all related tasks are deleted
 

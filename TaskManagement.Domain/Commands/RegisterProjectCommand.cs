@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using TaskManagement.Domain.Exceptions;
 
@@ -11,10 +12,10 @@ namespace TaskManagement.Domain.Commands
     {
         public required string Name { get; set; }
         public required string Description { get; set; }
-        public required DateTime StartDate { get; set; }
+       
 
 
-        public required int CreatedByUserId { get; set; }
+        public required string CreatedByUserMail{ get; set; }
 
         public void Validate()
         {
@@ -22,8 +23,10 @@ namespace TaskManagement.Domain.Commands
             { throw new ValidationException(" UserName must not be empty "); }
             if (string.IsNullOrWhiteSpace(Description))
             { throw new ValidationException(" Description must not be empty "); }
-            if (CreatedByUserId <= 0)
-            { throw new ValidationException(" Created By User Id must not be zero or less than zero "); }
+            string emailPattern = @"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$";
+            Regex regex = new Regex(emailPattern);
+            if ((!regex.IsMatch(CreatedByUserMail)))
+            { throw new ValidationException("Enter correct Email format"); }
             
 
         }

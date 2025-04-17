@@ -14,10 +14,10 @@ namespace TaskManagement.Domain.Commands
         public required int Id { get; set; }
         public required string Title { get; set; }
         public required string Description { get; set; }
-        public List<Customer>? AssignedCustomers { get; set; }
+        //public List<string>? AssignedUsersEMails { get; set; }
         public Status? Status { get; set; }
         public Priority? Priority { get; set; }
-        public DateTime? DeadLine { get; set; }
+        public DateOnly? DeadLine { get; set; }
 
         public void Validate()
         {
@@ -58,14 +58,14 @@ namespace TaskManagement.Domain.Commands
 
             if (DeadLine is not null)
             {
-                task.DeadLine = (DateTime)DeadLine;
+                task.DeadLine = (DateOnly)DeadLine;
             }
             
             
-            if (AssignedCustomers is not null)
-            {
-                task.AssignedCustomers = AssignedCustomers;
-            }
+            //if (AssignedUsersMail is not null)
+            //{
+            //    task.AssignedUsersMail = AssignedUsers;
+            //}
 
             task.Title = Title;
             task.Description = Description;

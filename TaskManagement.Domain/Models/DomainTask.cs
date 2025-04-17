@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using TaskManagement.Domain.Models.Abstraction;
 using TaskManagement.Domain.Models.Enums;
+using TaskManagement.Identity.Models;
 
 namespace TaskManagement.Domain.Models
 {
@@ -16,15 +17,21 @@ namespace TaskManagement.Domain.Models
         public required string Description { get; set; }
         public required int ProjectId { get; set; }
         public Project Project { get; set; } = null!;
-        public List<Customer> AssignedCustomers { get; set; } = new();
+        public List<TaskUser> AssignedUsers { get; set; } = new();
         public Status Status { get; set; }
         public required Priority Priority { get; set; }
-        public DateTime StartDate { get; private set; }
-        public required DateTime DeadLine { get; set; }
-        public required int CreatedByCustomerId { get; set; }
-        public Customer CreatedByCustomer { get; set; } = null!;
-        
+        public DateOnly StartDate { get; private set; }
+        public required DateOnly DeadLine { get; set; }
+        public required string CreatedByUserId { get; set; }
+        public ApplicationUser CreatedByUser { get; set; } = null!;
 
+        public DomainTask()
+        {
+            StartDate = DateOnly.FromDateTime(DateTime.UtcNow);
+            Status = Status.ToDo;
+
+
+        }
         public void Validate()
         {
             if (Title.Length is < 1 or > 100)
@@ -33,21 +40,21 @@ namespace TaskManagement.Domain.Models
             if (Description.Length is < 1 or > 4000)
                 throw new ValidationException(" project description must contain minimum 1 symbol and maximum 4000 symbol ");
 
-            if (DeadLine <= DateTime.Now)
+            if (DeadLine <= DateOnly.FromDateTime(DateTime.UtcNow))
                 throw new ValidationException(" Deadline must be in future time ");
         }
 
-        public void Open()
-        {
-            StartDate = DateTime.Now;
-            Status = Status.ToDo;
+        //public void Open()
+        //{
+        //    StartDate = DateTime.Now;
+        //    Status = Status.ToDo;
             
 
-        }
+        //}
 
         public void close()
         {
-            DeadLine = DateTime.Now;
+            DeadLine = DateOnly.FromDateTime(DateTime.UtcNow);
             Status = Status.Done;
         }
 
