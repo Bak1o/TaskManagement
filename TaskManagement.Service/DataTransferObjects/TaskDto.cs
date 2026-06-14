@@ -8,15 +8,15 @@ namespace TaskManagement.Service.DataTransferObjects
 {
     public sealed class TaskDto
     {
-        public string Title { get; set; }
-        public string Description { get; set; }
+        public string Title { get; set; } = string.Empty;
+        public string Description { get; set; } = string.Empty;
         public int ProjectId { get; set; }
-        public string ProjectName { get; set; }
-        public string Status { get; set; } // Convert to string
-        public string Priority { get; set; } // Convert to string
+        public string ProjectName { get; set; } = string.Empty;
+        public string Status { get; set; } = string.Empty;
+        public string Priority { get; set; } = string.Empty;
         public DateOnly StartDate { get; set; }
         public DateOnly Deadline { get; set; }
 
-        public string CreatedByUserEmail { get; set; }
+        public string CreatedByUserEmail { get; set; } = string.Empty;
     }
 }

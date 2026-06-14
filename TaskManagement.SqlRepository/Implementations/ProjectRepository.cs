@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using TaskManagement.Domain.Exceptions;
 using TaskManagement.Domain.Models;
 using TaskManagement.Service.Services.Abstractions;
@@ -26,9 +27,12 @@ namespace TaskManagement.SqlRepository.Implementations
             
         }
 
-        public Task DeleteAsync(int id)
+        public async Task DeleteAsync(int id)
         {
-            throw new NotImplementedException();
+            var project = await GetByIdAsync(id);
+
+            _dbContext.Projects.Remove(project);
+            await _dbContext.SaveChangesAsync();
         }
 
         public async Task<Project> GetByIdAsync(int id)
@@ -44,7 +48,9 @@ namespace TaskManagement.SqlRepository.Implementations
 
         public Task<List<Project>> ListAsync()
         {
-            throw new NotImplementedException();
+            return _dbContext.Projects
+                .AsNoTracking()
+                .ToListAsync();
         }
 
         public async Task SaveAsync(Project project)

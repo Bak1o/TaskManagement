@@ -42,7 +42,7 @@ namespace TaskManagement.Api.Controllers
         }
         [HttpPost]
 
-        public async Task<ActionResult<int>> RegisterProject(RegisterProjectCommand command)
+        public async Task<ActionResult<int>> RegisterProject([FromBody] RegisterProjectCommand command)
         {
             
            var projectId = await _projectService.ExecuteAsync(command);
@@ -51,10 +51,31 @@ namespace TaskManagement.Api.Controllers
         }
         [HttpPost("open")]
 
-        public async Task<ActionResult> OpenProject(OpenProjectCommand command)
+        public async Task<ActionResult> OpenProject([FromBody] OpenProjectCommand command)
         {
              await _projectService.ExecuteAsync(command);
             return Ok();
+        }
+
+        [HttpPost("close")]
+        public async Task<ActionResult> CloseProject([FromBody] CloseProjectCommand command)
+        {
+            await _projectService.ExecuteAsync(command);
+            return Ok();
+        }
+
+        [HttpPost("suspend")]
+        public async Task<ActionResult> SuspendProject([FromBody] SuspendProjectCommand command)
+        {
+            await _projectService.ExecuteAsync(command);
+            return Ok();
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<ActionResult> DeleteProject([FromRoute] int id)
+        {
+            await _projectRepository.DeleteAsync(id);
+            return Ok("was deleted succesfully");
         }
     }
 }

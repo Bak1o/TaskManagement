@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using TaskManagement.Domain.Models.Abstraction;
 using TaskManagement.Domain.Models.Enums;
-using TaskManagement.Identity.Models;
+
 
 namespace TaskManagement.Domain.Models
 {
@@ -23,7 +23,7 @@ namespace TaskManagement.Domain.Models
         public DateOnly StartDate { get; private set; }
         public required DateOnly DeadLine { get; set; }
         public required string CreatedByUserId { get; set; }
-        public ApplicationUser CreatedByUser { get; set; } = null!;
+        //public string CreatedByUser { get; set; } = null!;
 
         public DomainTask()
         {

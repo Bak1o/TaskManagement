@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using TaskManagement.Service.DataTransferObjects;
 
-namespace TaskManagement.SqlRepository.DataTransferObjects
+namespace TaskManagement.Service.DataTransferObjects
 {
     public class TaskWithUsersDto
     {

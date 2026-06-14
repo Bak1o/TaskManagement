@@ -15,18 +15,17 @@ using TaskManagement.Identity.Models;
 using TaskManagement.Service.DataTransferObjects;
 using TaskManagement.Service.Services.Abstractions;
 using TaskManagement.SqlRepository.Database;
-using TaskManagement.SqlRepository.DataTransferObjects;
 
 namespace TaskManagement.SqlRepository.Implementations
 {
     public class DomainTaskRepository : IDomainTaskRepository
     {
         private readonly AppDbContext _dbContext;
-        private readonly UserManager<ApplicationUser> _userManager;
-        public DomainTaskRepository(AppDbContext dbContext, UserManager<ApplicationUser> userManager)
+       
+        public DomainTaskRepository(AppDbContext dbContext)
         {
             _dbContext = dbContext;
-            _userManager = userManager;
+            
         }
         public async Task<int> CreateAsync(DomainTask taskToCreate, List<TaskUser> taskUsers)
         {
@@ -49,20 +48,30 @@ namespace TaskManagement.SqlRepository.Implementations
 
         public async Task<TaskDto> GetByIdDtoAsync(int id)
         {
-            var task = await GetByIdOrDefaultAsync(id) ?? throw new ObjectNotFoundException(id.ToString(), nameof(DomainTask));
-           var project = await _dbContext.Projects.FindAsync(task.ProjectId);
-            var user = await _userManager.FindByIdAsync(task.CreatedByUserId);
+            var task = await _dbContext.DomainTasks
+                        .AsNoTracking()
+                        .FirstOrDefaultAsync(t => t.Id == id)
+                        ?? throw new ObjectNotFoundException(id.ToString(), nameof(DomainTask));
+            var projectName = await _dbContext.Projects
+            .Where(p => p.Id == task.ProjectId)
+            .Select(p => p.Name)
+            .FirstOrDefaultAsync();
+
+            var userEmail = await _dbContext.Users
+                .Where(u => u.Id == task.CreatedByUserId)
+                .Select(u => u.Email)
+                .FirstOrDefaultAsync();
             return new TaskDto
             {
                 Title = task.Title,
                 Description = task.Description,
                 ProjectId = task.ProjectId,
-                ProjectName = project.Name,
+                ProjectName = projectName ?? string.Empty,
                 Status = task.Status.ToString(),
                 Priority = task.Priority.ToString(),
                 StartDate = task.StartDate,
                 Deadline = task.DeadLine,
-                CreatedByUserEmail = user.Email
+                CreatedByUserEmail = userEmail ?? string.Empty,
             };
         }
 
@@ -78,27 +87,30 @@ namespace TaskManagement.SqlRepository.Implementations
 
         public async Task<TaskWithUsersDto> GetByIdWithUsersAsync(int id)
         {
-            var taskWithUsers = await _dbContext.DomainTasks
-                               .Include(t => t.AssignedUsers) // Include the TaskUser relationship
-                               .ThenInclude(tu => tu.ApplicationUser) // Include the ApplicationUser from TaskUser
-                               .FirstOrDefaultAsync(t => t.Id == id);
+            var task = await _dbContext.DomainTasks
+            .AsNoTracking()
+            .FirstOrDefaultAsync(t => t.Id == id)
+            ?? throw new ObjectNotFoundException(id.ToString(), nameof(DomainTask));
 
-            if (taskWithUsers == null)
-            {
-                throw new ObjectNotFoundException(id.ToString(), nameof(DomainTask));
-            }
+            var assignedUsers = await (
+                from taskUser in _dbContext.TaskUsers
+                join user in _dbContext.Users
+                    on taskUser.ApplicationUserId equals user.Id
+                where taskUser.DomainTaskId == id
+                select new AssignedUsersDto
+                {
+                    FirstName = user.FirstName,
+                    LastName = user.LastName,
+                    Email = user.Email ?? string.Empty
+                })
+                .ToListAsync();
+
             return new TaskWithUsersDto
             {
-                Id = taskWithUsers.Id,
-                Title = taskWithUsers.Title,
-                Description = taskWithUsers.Description,
-                AssignedUsers = taskWithUsers.AssignedUsers.Select(au => new AssignedUsersDto
-                {
-                    FirstName = au.ApplicationUser.FirstName,
-                    LastName = au.ApplicationUser.LastName,
-                    Email = au.ApplicationUser.Email ?? string.Empty
-                }).ToList()
-
+                Id = task.Id,
+                Title = task.Title,
+                Description = task.Description,
+                AssignedUsers = assignedUsers
             };
         }
 
@@ -176,7 +188,20 @@ namespace TaskManagement.SqlRepository.Implementations
 
             if (!string.IsNullOrWhiteSpace(filter.AssignedUserMail))
             {
-                query = query.Where(t => t.AssignedUsers.Any(u => u.ApplicationUser.Email == filter.AssignedUserMail));
+                var userId = await _dbContext.Users
+                        .Where(u => u.Email == filter.AssignedUserMail)
+                        .Select(u => u.Id)
+                        .FirstOrDefaultAsync();
+
+                if (userId is null)
+                {
+                    throw new ObjectNotFoundException(filter.AssignedUserMail, "User");
+                }
+
+                query = query.Where(t =>
+                    _dbContext.TaskUsers.Any(tu =>
+                        tu.DomainTaskId == t.Id &&
+                        tu.ApplicationUserId == userId));
             }
 
             if (filter.Deadline.HasValue)
@@ -201,19 +226,25 @@ namespace TaskManagement.SqlRepository.Implementations
             }
 
             // **3. Project to TaskDto**
-            var result = await query.Select(t => new TaskDto
-            {
-                Title = t.Title,
-                Description = t.Description,
-                ProjectId = t.Project.Id,  // Assuming Project is a navigation property
-                ProjectName = t.Project.Name, // Assuming Project has a Name property
-                Status = t.Status.ToString(), // Convert Enum to string
-                Priority = t.Priority.ToString(), // Convert Enum or int to string
-                StartDate = t.StartDate,
-                Deadline = t.DeadLine,
-                CreatedByUserEmail = t.CreatedByUser.Email // Assuming CreatedBy is a user reference
-            }).ToListAsync();
-
+            var result = await (
+      from task in query
+      join project in _dbContext.Projects
+          on task.ProjectId equals project.Id
+      join user in _dbContext.Users
+          on task.CreatedByUserId equals user.Id
+      select new TaskDto
+      {
+          Title = task.Title,
+          Description = task.Description,
+          ProjectId = task.ProjectId,
+          ProjectName = project.Name,
+          Status = task.Status.ToString(),
+          Priority = task.Priority.ToString(),
+          StartDate = task.StartDate,
+          Deadline = task.DeadLine,
+          CreatedByUserEmail = user.Email ?? string.Empty
+      })
+      .ToListAsync();
             // **4. Validate Result**
             if (!result.Any())
             {
@@ -224,9 +255,9 @@ namespace TaskManagement.SqlRepository.Implementations
         }
 
 
-        public Task SaveAsync(DomainTask task)
+        public async Task SaveAsync(DomainTask task)
         {
-            throw new NotImplementedException();
+            await _dbContext.SaveChangesAsync();
         }
 
         public async Task UpdateAsync(DomainTask taskToUpdate)
@@ -254,52 +285,64 @@ namespace TaskManagement.SqlRepository.Implementations
 
         public async Task AddUserAsync(string userEmail, int taskId)
         {
-            var user = await _userManager.FindByEmailAsync(userEmail);
-            var task = await GetByIdAsync(taskId);
-            if (user == null)
+            var user = await _dbContext.Users.FirstOrDefaultAsync(u => u.Email == userEmail);
+            if (user is null)
             {
-                throw new NotFoundException($" user with Email : {userEmail} was not found ");
+                throw new ObjectNotFoundException(userEmail, "User");
             }
-           
+
+            _ = await GetByIdAsync(taskId);
+
+            var alreadyAssigned = await _dbContext.TaskUsers.AnyAsync(tu =>
+                tu.DomainTaskId == taskId &&
+                tu.ApplicationUserId == user.Id);
+
+            if (alreadyAssigned)
+            {
+                throw new ValidationException("User is already assigned to this task");
+            }
+
             var taskUser = new TaskUser
             {
-                DomainTask = task,
-                DomainTaskId = task.Id,
-                ApplicationUser = user,
-                ApplicationUserId = user.Id,
+                DomainTaskId = taskId,
+                ApplicationUserId = user.Id
             };
-            
-             _dbContext.TaskUsers.Add(taskUser);
-            task.AssignedUsers.Add(taskUser);
-             _dbContext.Update(task);
+
+            _dbContext.TaskUsers.Add(taskUser);
             await _dbContext.SaveChangesAsync();
         }
 
         public async Task RemoveUserAsync(string userEmail, int taskId)
         {
-            var user = await _userManager.FindByEmailAsync(userEmail);
-            if (user == null)
+            var user = await _dbContext.Users
+                .FirstOrDefaultAsync(u => u.Email == userEmail);
+            if (user is null)
             {
-                throw new NotFoundException($" user with Email : {userEmail} was not found ");
-            }
-            var task = await GetByIdAsync(taskId);
-            
-            
-            var taskUser = await _dbContext.TaskUsers.FindAsync(user.Id);
-            if (taskUser == null)
-            {
-                throw new NotFoundException($" no assign user was found with user Id : {user.Id}");
+                throw new ObjectNotFoundException(userEmail, "User");
             }
 
-            if (task.AssignedUsers.Count < 2)
+            var assignedUsersCount = await _dbContext.TaskUsers
+                .CountAsync(tu => tu.DomainTaskId == taskId);
+
+            if (assignedUsersCount < 2)
             {
-                throw new ValidationException(" You can't remove last assigned user from task ");
+                throw new ValidationException("You can't remove last assigned user from task");
             }
-            task.AssignedUsers.Remove(taskUser);
-            _dbContext.Update(task);
+
+            var taskUser = await _dbContext.TaskUsers
+                .FirstOrDefaultAsync(tu =>
+                    tu.DomainTaskId == taskId &&
+                    tu.ApplicationUserId == user.Id);
+
+            if (taskUser is null)
+            {
+                throw new ObjectNotFoundException(user.Id, nameof(TaskUser));
+            }
+
+            _dbContext.TaskUsers.Remove(taskUser);
             await _dbContext.SaveChangesAsync();
-           
-            
+
+
         }
         
     }

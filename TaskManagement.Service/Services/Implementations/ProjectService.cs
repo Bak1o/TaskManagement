@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,8 +9,7 @@ using TaskManagement.Domain.Abstractions;
 using TaskManagement.Domain.Commands;
 using TaskManagement.Domain.Exceptions;
 using TaskManagement.Domain.Models;
-using TaskManagement.Identity.Models;
-using TaskManagement.Identity.Services.Abstractions;
+
 using TaskManagement.Service.Services.Abstractions;
 
 namespace TaskManagement.Service.Services.Implementations
@@ -18,13 +17,13 @@ namespace TaskManagement.Service.Services.Implementations
     public class ProjectService : IProjectService
     {
         private readonly IProjectRepository _projectRepository;
-        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IUserLookupService _userLookupService;
 
 
-        public ProjectService(IProjectRepository projectRepository, UserManager<ApplicationUser> userManager)
+        public ProjectService(IProjectRepository projectRepository, IUserLookupService userLookupService)
         {
             _projectRepository = projectRepository;
-            _userManager = userManager;
+            _userLookupService = userLookupService;
 
         }
 
@@ -54,7 +53,7 @@ namespace TaskManagement.Service.Services.Implementations
         public async Task<int> ExecuteAsync(RegisterProjectCommand command)
         {
             command.Validate();
-            var user = await _userManager.FindByEmailAsync(command.CreatedByUserMail);
+            var user = await _userLookupService.FindByEmailAsync(command.CreatedByUserMail);
             if (user == null)
             {
                 throw new ObjectNotFoundException(command.CreatedByUserMail,nameof(user));
@@ -70,7 +69,7 @@ namespace TaskManagement.Service.Services.Implementations
         public async Task ExecuteAsync(OpenProjectCommand command)
         {
             command.Validate();
-            var projectExists = await _projectRepository.GetByIdOrDefaultAsync(command.Id);
+            var projectExists = await _projectRepository.GetByIdAsync(command.Id);
            
 
             projectExists.Open(command.EndDate);
@@ -79,7 +78,7 @@ namespace TaskManagement.Service.Services.Implementations
         public async Task ExecuteAsync(CloseProjectCommand command)
         {
             command.Validate();
-            var projectExists = await _projectRepository.GetByIdOrDefaultAsync(command.Id);
+            var projectExists = await _projectRepository.GetByIdAsync(command.Id);
            
             projectExists.Close();
             await _projectRepository.UpdateAsync(projectExists);
@@ -88,7 +87,7 @@ namespace TaskManagement.Service.Services.Implementations
         public async Task ExecuteAsync(SuspendProjectCommand command)
         {
             command.Validate();
-            var projectExists = await _projectRepository.GetByIdOrDefaultAsync(command.Id);
+            var projectExists = await _projectRepository.GetByIdAsync(command.Id);
            
             projectExists.Suspend();
             await _projectRepository.UpdateAsync(projectExists);
@@ -99,63 +98,6 @@ namespace TaskManagement.Service.Services.Implementations
 
 
 
-            //public Task CreateAsync(Project projectToCreate)
-            //{
-            //    if (ValidateCreateProject(projectToCreate))
-
-            //    {
-            //        if (projectToCreate.Id == 0)
-            //        {
-            //            projectToCreate.Id = _inMemoryDb.Projects.Count > 0 ? _inMemoryDb.Projects.Max(u => u.Id) + 1 : 1;
-            //        }
-
-            //        _inMemoryDb.Projects.Add(projectToCreate);
-            //    }
-            //    return Task.CompletedTask;
-            //}
-
-            //public Task<List<Project>> ListAsync()
-            //{
-            //    return Task.FromResult(_inMemoryDb.Projects);
-            //}
-
-            //public Task<Project> GetByIdAsync(int id)
-            //{
-            //    return Task.FromResult( _inMemoryDb.Projects.FirstOrDefault(p => p.Id == id)!);
-            //}
-
-            //public Task<Project> GetByIdOrDefaultAsync(int id)
-            //{
-            //    return Task.FromResult(_inMemoryDb.Projects.FirstOrDefault(p => p.Id == id)!);
-            //}
-
-            //public async Task UpdateAsync(UpdateProject updateProject)
-            //{
-            //    var requestedProjectExist =  _inMemoryDb.Projects.Find(u => u.Id == updateProject.Id);
-            //    if (requestedProjectExist == null)
-            //    {
-            //        throw new OwnValidationException($" Project with id = {updateProject.Id} doesn't exists");
-            //    }
-
-            //    updateProject.Validate();
-
-            //        ProjectTransform.TransformFromModelToRepositoryModel(updateProject,requestedProjectExist);
-
-            //}
-
-            //public async Task DeleteAsync(int id)
-            //{
-            //    var project = _inMemoryDb.Projects.FirstOrDefault(p => p.Id == id);
-            //    if (project == null)
-            //    {
-            //        throw new OwnValidationException($" Project with id = {id} doesn't exists");
-            //    }
-            //    _inMemoryDb.Projects.Remove(project);
-            //}
-            //public  Task SaveAsync(Project project)
-            //{
-            //    return Task.CompletedTask;
-            //}
 
 
 

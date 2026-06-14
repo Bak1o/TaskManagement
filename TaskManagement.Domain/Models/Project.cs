@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using TaskManagement.Domain.Models.Abstraction;
 using TaskManagement.Domain.Models.Enums;
-using TaskManagement.Identity.Models;
+
 
 namespace TaskManagement.Domain.Models
 {
@@ -18,7 +18,7 @@ namespace TaskManagement.Domain.Models
         public DateOnly? EndDate { get; private set; }
         public Status Status { get; private set; }
         public string CreatedByUserId { get; private set; }
-        public ApplicationUser CreatedByUser { get;  set; } = null!;
+        //public ApplicationUser CreatedByUser { get;  set; } = null!;
        
         // One Project has many Tasks
         //public List<DomainTask> Tasks { get; set; } = new(); 

@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using TaskManagement.Domain.Models;
 using TaskManagement.Domain.Models.Enums;
+using TaskManagement.Identity.Models;
 
 namespace TaskManagement.SqlRepository.EntityConfigurations
 {
@@ -53,13 +54,19 @@ namespace TaskManagement.SqlRepository.EntityConfigurations
 
 
             builder.HasIndex(t => t.ProjectId).IncludeProperties(t => new { t.Status, t.Priority });
-          
-            // Relationship: Task is created by one Customer
+
             builder
-                .HasOne(t => t.CreatedByUser)
-                .WithMany()
-                .HasForeignKey(t => t.CreatedByUserId)
-                .OnDelete(DeleteBehavior.Restrict);
+    .HasOne<ApplicationUser>()
+    .WithMany()
+    .HasForeignKey(t => t.CreatedByUserId)
+    .OnDelete(DeleteBehavior.Restrict);
+
+            // Relationship: Task is created by one Customer
+            //builder
+            //    .HasOne(t => t.CreatedByUser)
+            //    .WithMany()
+            //    .HasForeignKey(t => t.CreatedByUserId)
+            //    .OnDelete(DeleteBehavior.Restrict);
 
 
             //builder
@@ -69,7 +76,7 @@ namespace TaskManagement.SqlRepository.EntityConfigurations
             //"TaskCustomer",
             //    j => j.HasOne<Customer>().WithMany().HasForeignKey("CustomerId"),
             //    j => j.HasOne<DomainTask>().WithMany().HasForeignKey("TaskId"));
-            
+
             // Relationship: Task belongs to one Project
             builder
                 .HasOne(t => t.Project) // Each Task is linked to one Project

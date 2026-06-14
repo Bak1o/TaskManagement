@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using TaskManagement.Domain.Models;
 using TaskManagement.Domain.Models.Enums;
+using TaskManagement.Identity.Models;
 
 namespace TaskManagement.SqlRepository.EntityConfigurations
 {
@@ -44,11 +45,17 @@ namespace TaskManagement.SqlRepository.EntityConfigurations
 
             builder.HasIndex(x => x.Status);
             builder
-                .HasOne(c => c.CreatedByUser)
-                .WithMany()
-                .HasForeignKey(x => x.CreatedByUserId)
-                .OnDelete(DeleteBehavior.Restrict); // Prevent deleting customer if projects exist
+    .HasOne<ApplicationUser>()
+    .WithMany()
+    .HasForeignKey(p => p.CreatedByUserId)
+    .OnDelete(DeleteBehavior.Restrict);
+
             //builder
+            //    .HasOne(c => c.CreatedByUser)
+            //    .WithMany()
+            //    .HasForeignKey(x => x.CreatedByUserId)
+            //    .OnDelete(DeleteBehavior.Restrict); // Prevent deleting customer if projects exist
+            ////builder
             //    .HasMany(p => p.Tasks) // One Project has many Tasks
             //    .WithOne(t => t.Project) // Each Task belongs to one Project
             //    .HasForeignKey(t => t.ProjectId) // Foreign key in DomainTask table

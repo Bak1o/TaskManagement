@@ -18,6 +18,7 @@ namespace TaskManagement.SqlRepository.Extensions
             
             services.AddScoped<IProjectRepository, ProjectRepository>();
             services.AddScoped<IDomainTaskRepository, DomainTaskRepository>();
+            services.AddScoped<IUserLookupService, UserLookupService>();
             services.AddScoped<ITokenRepository, TokenRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
             return services;

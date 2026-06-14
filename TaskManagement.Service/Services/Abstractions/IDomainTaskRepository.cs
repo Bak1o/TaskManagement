@@ -5,9 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 using TaskManagement.Domain.Models;
 using TaskManagement.Domain.Queries;
-using TaskManagement.Identity.Models;
+
 using TaskManagement.Service.DataTransferObjects;
-using TaskManagement.SqlRepository.DataTransferObjects;
 
 namespace TaskManagement.Service.Services.Abstractions
 {

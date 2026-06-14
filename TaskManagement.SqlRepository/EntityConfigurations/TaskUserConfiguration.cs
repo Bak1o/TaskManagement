@@ -7,6 +7,7 @@ using System.Reflection.Emit;
 using System.Text;
 using System.Threading.Tasks;
 using TaskManagement.Domain.Models;
+using TaskManagement.Identity.Models;
 
 
 namespace TaskManagement.SqlRepository.EntityConfigurations
@@ -21,11 +22,15 @@ namespace TaskManagement.SqlRepository.EntityConfigurations
                 .HasOne(tu => tu.DomainTask)
                 .WithMany(t => t.AssignedUsers)
                 .HasForeignKey(tu => tu.DomainTaskId);
-
             builder
-                .HasOne(tu => tu.ApplicationUser)
+                .HasOne<ApplicationUser>()
                 .WithMany()
                 .HasForeignKey(tu => tu.ApplicationUserId);
+
+            //builder
+            //    .HasOne(tu => tu.ApplicationUser)
+            //    .WithMany()
+            //    .HasForeignKey(tu => tu.ApplicationUserId);
         }
     }
 }

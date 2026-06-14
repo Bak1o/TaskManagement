@@ -27,6 +27,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaskManagement.MessageSende
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaskManagement.MessageSender.Abstractions", "TaskManagement.MessageSender.Abstractions\TaskManagement.MessageSender.Abstractions.csproj", "{44B51A1E-CBFB-4471-9A89-E9F6F19DDC77}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaskManagement.Service.Tests", "TaskManagement.Service.Tests\TaskManagement.Service.Tests.csproj", "{635CFD91-EBC4-4C1A-8C69-07580C00978B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -61,6 +63,10 @@ Global
 		{44B51A1E-CBFB-4471-9A89-E9F6F19DDC77}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{44B51A1E-CBFB-4471-9A89-E9F6F19DDC77}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{44B51A1E-CBFB-4471-9A89-E9F6F19DDC77}.Release|Any CPU.Build.0 = Release|Any CPU
+		{635CFD91-EBC4-4C1A-8C69-07580C00978B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{635CFD91-EBC4-4C1A-8C69-07580C00978B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{635CFD91-EBC4-4C1A-8C69-07580C00978B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{635CFD91-EBC4-4C1A-8C69-07580C00978B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -73,5 +79,9 @@ Global
 		{DBB49844-FEC4-4267-843D-F8DB329D7666} = {95207A90-9D9E-45AF-80CA-B62B50EC1880}
 		{385FF03D-E777-486F-A9AF-A004CEBBFB99} = {95207A90-9D9E-45AF-80CA-B62B50EC1880}
 		{44B51A1E-CBFB-4471-9A89-E9F6F19DDC77} = {95207A90-9D9E-45AF-80CA-B62B50EC1880}
+		{635CFD91-EBC4-4C1A-8C69-07580C00978B} = {A7FCF81B-79CF-49E6-93FB-0FF0E9E9CD85}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {490672DF-AC33-439A-B48F-5B908E185191}
 	EndGlobalSection
 EndGlobal

@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,8 +9,8 @@ using TaskManagement.Domain.Commands;
 using TaskManagement.Domain.Exceptions;
 using TaskManagement.Domain.Models;
 using TaskManagement.Domain.Models.Enums;
-using TaskManagement.Identity.Exceptions;
-using TaskManagement.Identity.Models;
+
+using TaskManagement.Service.DataTransferObjects;
 using TaskManagement.Service.Services.Abstractions;
 
 namespace TaskManagement.Service.Services.Implementations
@@ -18,20 +18,20 @@ namespace TaskManagement.Service.Services.Implementations
     public class DomainTaskService : IDomainTaskService
     {
         private readonly IDomainTaskRepository _repository;
-        private readonly UserManager<ApplicationUser> _userManager;
-        public DomainTaskService(IDomainTaskRepository repository, UserManager<ApplicationUser> userManager)
+        private readonly IUserLookupService _userLookupService;
+        public DomainTaskService(IDomainTaskRepository repository, IUserLookupService userLookupService)
         {
             _repository = repository;
-            _userManager = userManager;
+            _userLookupService = userLookupService;
 
         }
         public async Task<int> OpenAsync(OpenTaskCommand command)
         {
             command.Validate();
-            var assignedUsers = new List<ApplicationUser>();
+            var assignedUsers = new List<UserLookupDto>();
             foreach (var email in command.AssignedUsersEmails)
             {
-                var user = await _userManager.FindByEmailAsync(email);
+                var user = await _userLookupService.FindByEmailAsync(email);
                 if (user != null)
                 {
                     assignedUsers.Add(user);
@@ -40,14 +40,15 @@ namespace TaskManagement.Service.Services.Implementations
 
             if (!assignedUsers.Any())
             {
-                throw new NotFoundException ("No valid users found for assignment.");
+                throw new ValidationException("No valid users found for assignment.");
+
             }
 
             // Step 2: Find the Creator User using UserManager
-            var creatorUser = await _userManager.FindByEmailAsync(command.CreatedByUserMail);
+            var creatorUser = await _userLookupService.FindByEmailAsync(command.CreatedByUserMail);
             if (creatorUser == null)
             {
-                throw new NotFoundException ("Invalid creator email.");
+                throw new ObjectNotFoundException(command.CreatedByUserMail, "User");
             }
 
             // Step 3: Create the DomainTask
@@ -59,7 +60,7 @@ namespace TaskManagement.Service.Services.Implementations
                 Priority = command.Priority,
                 DeadLine = command.DeadLine,
                 CreatedByUserId = creatorUser.Id,
-                CreatedByUser = creatorUser,
+               
                 Status = Status.ToDo
             };
 
@@ -68,7 +69,7 @@ namespace TaskManagement.Service.Services.Implementations
             {
                 DomainTask = task,
                 DomainTaskId = task.Id,
-                ApplicationUser = user,
+                
                 ApplicationUserId = user.Id
             }).ToList();
 
@@ -85,22 +86,7 @@ namespace TaskManagement.Service.Services.Implementations
 
             command.UpdateMatchingCheck(taskExist);
 
-            //if (command.AssignedUsersEMails != null)
-            //{
-            //    var assignedUsers = new List<ApplicationUser>();
-            //    foreach (var email in command.AssignedUsersEMails)
-            //    {
-            //        var user = await _userManager.FindByEmailAsync(email);
-            //        if (user != null)
-            //        {
-            //            assignedUsers.Add(user);
-            //        }
-            //    }
-
-            //    if (!assignedUsers.Any())
-            //    {
-            //        throw new NotFoundException("No valid users found for assignment.");
-            //    }
+            
 
                  
             
